@@ -42,5 +42,14 @@ class RouteStopSeeder extends Seeder
             3 => ['sequence' => 3],
             1 => ['sequence' => 4]
         ]);
+
+        $route4 = Route::where('number', '12')->where('direction', 'ул. Стетхема')->first();
+
+        $route4->stops()->attach([
+            2 => ['sequence' => 1],
+            5 => ['sequence' => 2],
+            3 => ['sequence' => 3],
+            1 => ['sequence' => 4]
+        ]);
     }
 }

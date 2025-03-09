@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Route;
 use App\Models\Schedule;
 use App\Models\Stop;
+use App\Services\BusService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Bus;
 
 class BusController extends Controller
 {
@@ -19,47 +21,12 @@ class BusController extends Controller
         $from = $request->input('from');
         $to = $request->input('to');
 
-        $routes = Route::whereHas('stops', function ($query) use ($from) {
-            $query->where('stop_id', $from);
-        })
-            ->whereHas('stops', function ($query) use ($to) {
-                $query->where('stop_id', $to);
-            })->get();
+        $buses = new BusService();
 
-        $result = [];
-        $now = Carbon::now()->format('H:i');
-
-        foreach ($routes as $route) {
-            $stops = $route->stops()->orderBy('sequence')->get();
-
-            $fromSequence = $stops->where('id', $from)->first()->pivot->sequence;
-            $toSequence = $stops->where('id', $to)->first()->pivot->sequence;
-
-            if ($fromSequence >= $toSequence) {
-                continue;
-            }
-
-            $schedule = Schedule::where('route_id', $route->id)
-                ->where('stop_id', $from)
-                ->where('arrival_time', '>=', $now)
-                ->orderBy('arrival_time')
-                ->limit(3)
-                ->get();
-
-            if ($schedule->isEmpty()) {
-                continue;
-            }
-
-            $result[] = [
-                'route' => "Автобус №{$route->number} в сторону {$route->direction}",
-                'next' => $schedule->pluck('arrival_time')->toArray(),
-                ];
-        }
-
-        return response()->json([
+        return response()->json(array(
             'from' => Stop::find($from)->name,
             'to' =>Stop::find($to)->name,
-            'buses' => $result
-        ]);
+            'buses' => $buses->findBuses($from, $to)
+        ));
     }
 }

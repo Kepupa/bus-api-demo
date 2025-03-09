@@ -17,6 +17,7 @@ class RouteSeeder extends Seeder
             ['number' => '1', 'direction' => 'ул. Гослинга'],
             ['number' => '12', 'direction' => 'ул. Стетхема'],
             ['number' => '6', 'direction' => 'хорошей жизни']
+
         ];
         foreach ($routes as $route) Route::create($route);
     }

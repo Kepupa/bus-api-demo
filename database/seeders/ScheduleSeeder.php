@@ -98,5 +98,30 @@ class ScheduleSeeder extends Seeder
             'stop_id' => $stops2[4]->id, // ул. Ленина
             'arrival_time' => '9:00',
         ]);
+
+        $route4 = Route::where('number', '12')->where('direction', 'ул. Стетхема')->first();
+
+        $stops4 = $route4->stops;
+
+        Schedule::create([
+            'route_id' => $route4->id,
+            'stop_id' => $stops4[0]->id, // ул. Пушкина
+            'arrival_time' => '09:00',
+        ]);
+        Schedule::create([
+            'route_id' => $route4->id,
+            'stop_id' => $stops4[1]->id, // ост. Попова
+            'arrival_time' => '09:15',
+        ]);
+        Schedule::create([
+            'route_id' => $route4->id,
+            'stop_id' => $stops4[2]->id, // ост. Садовая
+            'arrival_time' => '09:30',
+        ]);
+        Schedule::create([
+            'route_id' => $route4->id,
+            'stop_id' => $stops4[3]->id, // ул. Ленина
+            'arrival_time' => '9:45',
+        ]);
     }
 }
